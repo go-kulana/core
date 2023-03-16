@@ -1,1 +1,1 @@
-# kulana-core
+# kulana/core
