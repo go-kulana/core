@@ -1,6 +1,9 @@
-package main
+package core
 
-import "github.com/boatware/domainer"
+import (
+	"github.com/boatware/domainer"
+	"time"
+)
 
 type Settings struct {
 	FallbackPort     int    `json:"default_port,omitempty"`
@@ -33,6 +36,7 @@ type DNS struct {
 }
 
 type HostInfo struct {
+	RequestTimestamp time.Time       `json:"request_timestamp,omitempty"`
 	URL              *domainer.URL   `json:"url,omitempty"`
 	HttpStatusCode   int             `json:"http_status_code,omitempty"`
 	RedirectUrls     []string        `json:"redirect_urls,omitempty"`

@@ -1,4 +1,4 @@
-package main
+package core
 
 import (
 	"crypto/tls"
@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"time"
 )
+
+const Debug = true
 
 func nanoTime() int64 {
 	return time.Now().UnixNano()
@@ -30,8 +32,13 @@ func createHttpClient() *http.Client {
 func buildInfo(domain string) (*HostInfo, error) {
 	url, err := domainer.FromString(domain)
 	if err != nil {
-		return info, err
+		if Debug {
+			panic(err)
+		}
+		return &HostInfo{}, err
 	}
+
+	info := &HostInfo{}
 
 	if url.Port == 0 {
 		url.Port = RequestSettings.FallbackPort
@@ -43,5 +50,20 @@ func buildInfo(domain string) (*HostInfo, error) {
 
 	info.URL = url
 
+	// Add the current time in UTC
+	info.RequestTimestamp = time.Now().UTC()
+
 	return info, nil
+}
+
+func getHostname(domain string) (string, error) {
+	url, err := domainer.FromString(domain)
+	if err != nil {
+		if Debug {
+			panic(err)
+		}
+		return "", err
+	}
+
+	return url.Hostname, nil
 }

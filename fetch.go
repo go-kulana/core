@@ -1,4 +1,4 @@
-package main
+package core
 
 import (
 	"crypto/tls"
@@ -9,10 +9,16 @@ import (
 	"time"
 )
 
+var redirectCount = 0
+var redirectUrls []string
+
 func ping(url *domainer.URL) (int64, error) {
 	protocol := "tcp"
 	timeout := 30
 	port := url.Port
+	if port == 0 {
+		port = RequestSettings.FallbackPort
+	}
 
 	address := fmt.Sprintf("%s.%s:%d", url.Domain, url.TLD, port)
 	duration := time.Duration(timeout) * time.Second
@@ -20,50 +26,63 @@ func ping(url *domainer.URL) (int64, error) {
 	start := nanoTime()
 	conn, err := net.DialTimeout(protocol, address, duration)
 	if err != nil {
+		if Debug {
+			panic(err)
+		}
 		return 0, err
 	}
 	end := nanoTime()
 	err = conn.Close()
 	if err != nil {
+		if Debug {
+			panic(err)
+		}
 		return 0, err
 	}
 
 	return end - start, nil
 }
 
-func fetch(info *HostInfo, url string) error {
+func fetch(url string, u *domainer.URL) (int, float64, error) {
 	client := createHttpClient()
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return err
+		if Debug {
+			panic(err)
+		}
+		return 0, 0, err
 	}
 	req.Header.Set("User-Agent", RequestSettings.UserAgent)
 
-	if info.URL.Username != "" && info.URL.Password != "" {
-		req.SetBasicAuth(info.URL.Username, info.URL.Password)
+	if u.Username != "" && u.Password != "" {
+		req.SetBasicAuth(u.Username, u.Password)
 	}
 
 	start := nanoTime()
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		if Debug {
+			panic(err)
+		}
+		return 0, 0, err
 	}
+
 	end := nanoTime()
 	defer client.CloseIdleConnections()
 
-	info.HttpStatusCode = resp.StatusCode
-	info.HttpResponseTime = nanoToMilli(end - start)
+	statusCode := resp.StatusCode
+	responseTime := nanoToMilli(end - start)
 
-	if resp.StatusCode >= 300 && resp.StatusCode < 400 {
-		if info.RedirectCount < RequestSettings.RedirectLimit {
-			info.RedirectCount++
+	if statusCode >= 300 && statusCode < 400 {
+		redirectCount++
+		if redirectCount < RequestSettings.RedirectLimit {
 			redirectUrl := resp.Header.Get("Location")
-			info.RedirectUrls = append(info.RedirectUrls, redirectUrl)
-			return fetch(info, redirectUrl)
+			redirectUrls = append(redirectUrls, redirectUrl)
+			return fetch(redirectUrl, u)
 		}
 	}
 
-	return nil
+	return statusCode, responseTime, nil
 }
 
 func checkCertificate(url *domainer.URL) *TlsCertificate {
@@ -71,12 +90,18 @@ func checkCertificate(url *domainer.URL) *TlsCertificate {
 	hostname := fmt.Sprintf("%s.%s", url.Domain, url.TLD)
 	conn, err := tls.Dial("tcp", hostname+":443", nil)
 	if err != nil {
+		if Debug {
+			panic(err)
+		}
 		// Server doesn't support TLS
 		return cert
 	}
 
 	err = conn.VerifyHostname(hostname)
 	if err != nil {
+		if Debug {
+			panic(err)
+		}
 		return cert
 	}
 
