@@ -16,6 +16,11 @@ func GetRawResponseTime(domain string) (int, float64, error) {
 		return 0, 0, err
 	}
 
+	if url.Protocol == "" {
+		url.Protocol = RequestSettings.FallbackProtocol
+		url.FullURL = url.Protocol + "://" + url.FullURL
+	}
+
 	// Fetch the host
 	fullUrl := fmt.Sprintf("%s://%s.%s", url.Protocol, url.Domain, url.TLD)
 	if url.Subdomain != "" {

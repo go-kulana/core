@@ -5,14 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="86352aa6-1e4a-49e7-b772-192afe6e2729" name="Changes" comment="#">
+      <change beforePath="$PROJECT_DIR$/.idea/core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/core.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch.go" beforeDir="false" afterPath="$PROJECT_DIR$/fetch.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers.go" beforeDir="false" afterPath="$PROJECT_DIR$/helpers.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/models.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sample_data_ping.json" beforeDir="false" afterPath="$PROJECT_DIR$/sample_data_ping.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sample_data_response_time.json" beforeDir="false" afterPath="$PROJECT_DIR$/sample_data_response_time.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +43,7 @@
     "WebServerToolWindowFactoryState": "false",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/Users/thomas/Desktop/Projects/kulana/core",
+    "last_opened_file_path": "/home/thomas/Projects/kulana/cli",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
@@ -57,6 +51,16 @@
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="86352aa6-1e4a-49e7-b772-192afe6e2729" name="Changes" comment="#" />
+      <created>1679079725260</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1679079725260</updated>
+    </task>
+    <servers />
+  </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
