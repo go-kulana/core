@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const Debug = true
+const Debug = false
 
 func nanoTime() int64 {
 	return time.Now().UnixNano()
