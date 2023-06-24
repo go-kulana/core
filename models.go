@@ -45,4 +45,5 @@ type HostInfo struct {
 	PingTime         float64         `json:"ping_time,omitempty"`
 	HttpResponseTime float64         `json:"http_response_time,omitempty"`
 	DNS              *DNS            `json:"dns,omitempty"`
+	Errors           []string        `json:"errors,omitempty"`
 }

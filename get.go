@@ -199,6 +199,8 @@ func GetAll(domain string) (*HostInfo, error) {
 		if Debug {
 			panic(err)
 		}
+
+		// Return at this point because it doesn't make sense to continue.
 		return info, err
 	}
 
@@ -207,24 +209,34 @@ func GetAll(domain string) (*HostInfo, error) {
 		if Debug {
 			panic(err)
 		}
-		return info, err
+
+		// Append error to the list of errors
+		info.Errors = append(info.Errors, err.Error())
 	}
 
-	info.HttpStatusCode = statusCode
-	info.HttpResponseTime = responseTime
-	info.RedirectCount = redirectCount
-	info.RedirectUrls = redirectUrls
+	// It only makes sense to get the following information if the response time was successful
+	if err == nil {
+		info.HttpStatusCode = statusCode
+		info.HttpResponseTime = responseTime
+		info.RedirectCount = redirectCount
+		info.RedirectUrls = redirectUrls
+	}
 
 	pingTime, err := GetRawPing(domain)
 	if err != nil {
 		if Debug {
 			panic(err)
 		}
-		return info, err
+
+		// Append error to the list of errors
+		info.Errors = append(info.Errors, err.Error())
 	}
 
-	info.PingTime = nanoToMilli(pingTime)
+	if err == nil {
+		info.PingTime = nanoToMilli(pingTime)
+	}
 
+	// The DNS infos don't need to be error-handled like above because the functions simply return empty arrays if there is an error.
 	info.DNS = &DNS{
 		MX:    GetRawMX(domain),
 		TXT:   GetRawTXT(domain),
@@ -234,12 +246,18 @@ func GetAll(domain string) (*HostInfo, error) {
 		SRV:   GetRawSRV(domain),
 	}
 
-	info.TlsCertificate, err = GetRawTLSCertificate(domain)
+	tlsCertificate, err := GetRawTLSCertificate(domain)
 	if err != nil {
 		if Debug {
 			panic(err)
 		}
-		return info, err
+
+		// Append error to the list of errors
+		info.Errors = append(info.Errors, err.Error())
+	}
+
+	if err == nil {
+		info.TlsCertificate = tlsCertificate
 	}
 
 	return info, nil
